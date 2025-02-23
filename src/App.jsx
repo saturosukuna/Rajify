@@ -31,9 +31,16 @@ export default function App() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [viewMode, setViewMode] = useState('playlists') // 'playlists' or 'tracks'
   const [cachedPlaylists, setCachedPlaylists] = useState(new Map())
-
+  const currentIndexRef = useRef(currentIndex);
+  const currentTracksRef = useRef(currentTracks);
   const YOUTUBE_API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY
-
+  useEffect(() => {
+    currentIndexRef.current = currentIndex;
+  }, [currentIndex]);
+  
+  useEffect(() => {
+    currentTracksRef.current = currentTracks;
+  }, [currentTracks]);
   // YouTube Player Setup
   useEffect(() => {
     const tag = document.createElement('script')
@@ -56,9 +63,11 @@ export default function App() {
 
   const onPlayerStateChange = (event) => {
     if (event.data === window.YT.PlayerState.ENDED) {
-      playNext()
+      // Use ref values to get the latest state
+      const newIndex = (currentIndexRef.current + 1) % currentTracksRef.current.length;
+      playTrack(newIndex);
     }
-    setIsPlaying(event.data === window.YT.PlayerState.PLAYING)
+    setIsPlaying(event.data === window.YT.PlayerState.PLAYING);
   }
 
   // Fetch popular playlists when language changes
@@ -123,10 +132,12 @@ export default function App() {
 
   // Playback controls
   const playTrack = (index) => {
-    setCurrentIndex(index)
-    setCurrentTrack(currentTracks[index])
-    playerRef.current.loadVideoById(currentTracks[index].id)
-    playerRef.current.playVideo()
+    setCurrentIndex(index);
+    // Use currentTracksRef instead of state directly
+    const track = currentTracksRef.current[index];
+    setCurrentTrack(track);
+    playerRef.current.loadVideoById(track.id);
+    playerRef.current.playVideo();
   }
 
   const playNext = () => {
@@ -152,6 +163,31 @@ export default function App() {
     
     return () => clearInterval(interval)
   }, [])
+  // Add this search handler function
+const handleSearch = async (e) => {
+  e.preventDefault()
+  if (!searchTerm) return
+
+  try {
+    const { data } = await axios.get(
+      'https://www.googleapis.com/youtube/v3/search', 
+      {
+        params: {
+          part: 'snippet',
+          q: `${searchTerm} ${language} music playlist`,
+          type: 'playlist',
+          maxResults: 10,
+          key: YOUTUBE_API_KEY
+        }
+      }
+    )
+    setPlaylists(data.items)
+  } catch (error) {
+    console.error('Search failed:', error)
+  }
+}
+
+
 
   return (
     <div className="h-screen bg-gradient-to-b from-gray-900 to-black text-white flex flex-col">
@@ -189,15 +225,25 @@ export default function App() {
         </div>
 
         {/* Search Bar */}
-        <div className="mb-6">
-          <input
-            type="text"
-            placeholder={`Search ${language} playlists...`}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full p-3 rounded-lg bg-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
-        </div>
+        {viewMode === 'playlists' ? (    
+<div className="mb-6">
+  <form onSubmit={handleSearch} className="flex gap-2">
+    <input
+      type="text"
+      placeholder={`Search ${language} playlists...`}
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+      className="w-full p-3 rounded-lg bg-gray-800 focus:outline-none focus:ring-2 focus:ring-green-500"
+    />
+    <button 
+      type="submit"
+      className="px-4 py-2 bg-green-500 rounded-lg hover:bg-green-600 transition"
+    >
+      Search
+    </button>
+  </form>
+</div>
+        ):''}
 
         {/* Content Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
