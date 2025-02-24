@@ -27,5 +27,6 @@ self.addEventListener('activate', (event) => {
       keys.filter(key => key !== CACHE_NAME)
         .map(key => caches.delete(key))
     )
+)
   );
 });
