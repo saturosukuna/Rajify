@@ -42,20 +42,43 @@ export default function App() {
     currentTracksRef.current = currentTracks;
   }, [currentTracks]);
   // YouTube Player Setup
-  useEffect(() => {
-    const tag = document.createElement('script')
-    tag.src = "https://www.youtube.com/iframe_api"
-    document.body.appendChild(tag)
+  // Add this useEffect hook in your App component
+useEffect(() => {
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(registration => {
+          console.log('ServiceWorker registration successful')
+        })
+        .catch(err => {
+          console.log('ServiceWorker registration failed: ', err)
+        })
+    })
+  }
+}, [])
+ // Update the YouTube Player Setup useEffect
+useEffect(() => {
+  const tag = document.createElement('script')
+  tag.src = "https://www.youtube.com/iframe_api"
+  document.body.appendChild(tag)
 
-    window.onYouTubeIframeAPIReady = () => {
-      playerRef.current = new window.YT.Player('player', {
-        events: {
-          'onReady': onPlayerReady,
-          'onStateChange': onPlayerStateChange
-        }
-      })
-    }
-  }, [])
+  window.onYouTubeIframeAPIReady = () => {
+    playerRef.current = new window.YT.Player('player', {
+      playerVars: {
+        'autoplay': 1,
+        'controls': 0,
+        'disablekb': 1,
+        'enablejsapi': 1,
+        'playsinline': 1,
+        'origin': window.location.origin
+      },
+      events: {
+        'onReady': onPlayerReady,
+        'onStateChange': onPlayerStateChange
+      }
+    })
+  }
+}, [])
 
   const onPlayerReady = (event) => {
     event.target.setVolume(volume * 100)
