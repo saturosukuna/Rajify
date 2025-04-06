@@ -49,6 +49,6 @@
   <p>MIT License</p>
 
   <h2>🔗 Live Demo</h2>
-  <p>Check out the live version here: <a href="[https://your-username.github.io/rajify/](https://saturosukuna.github.io/Rajify/)" target="_blank">https://your-username.github.io/rajify/</a></p>
+  <p>Check out the live version here: <a href="https://saturosukuna.github.io/Rajify/" target="_blank">https://saturosukuna.github.io/Rajify/</a></p>
 
 
