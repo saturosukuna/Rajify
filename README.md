@@ -1,39 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Rajify - Music Streaming Website</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f9f9f9;
-      color: #333;
-      padding: 2rem;
-      line-height: 1.6;
-    }
-    h1 {
-      color: #4f46e5;
-    }
-    code {
-      background: #eee;
-      padding: 2px 4px;
-      border-radius: 4px;
-    }
-    pre {
-      background: #eee;
-      padding: 1rem;
-      overflow-x: auto;
-    }
-    a {
-      color: #4f46e5;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-  </style>
-</head>
-<body>
+
   <h1>🎵 Rajify - Music Streaming Website</h1>
   <p><strong>Rajify</strong> is a modern music streaming website built using <code>Vite + React</code> and powered by the <strong>YouTube Data API v3</strong>. It offers a smooth and responsive user experience with a sleek UI, enabling users to stream music directly from YouTube.</p>
 
@@ -45,6 +10,8 @@
     <li>Progressive Web App (PWA) support</li>
     <li>Deployed using GitHub Pages</li>
   </ul>
+
+  
 
   <h2>📦 Dependencies</h2>
   <pre><code>
@@ -84,5 +51,4 @@
   <h2>🔗 Live Demo</h2>
   <p>Check out the live version here: <a href="[https://your-username.github.io/rajify/](https://saturosukuna.github.io/Rajify/)" target="_blank">https://your-username.github.io/rajify/</a></p>
 
-</body>
-</html>
+
